@@ -43,11 +43,11 @@ fn step([[builtin(global_invocation_id)]] global_invocation_id: vec3<u32>){
     var vColor: vec3<f32> =  in.boids[index].color;
 
     var sepSum: vec2<f32> = vec2<f32>(0.0, 0.0);
-    var sepCount: u32 = 0u;
+    var sepCount: f32 = 0.0;
     var aliSum: vec2<f32> = vec2<f32>(0.0, 0.0);
-    var aliCount: u32 = 0u;
+    var aliCount: f32 = 0.0;
     var cohSum: vec2<f32> = vec2<f32>(0.0, 0.0);
-    var cohCount: u32 = 0u;
+    var cohCount: f32 = 0.0;
 
     var i:u32 = 0u;
     loop {
@@ -60,19 +60,22 @@ fn step([[builtin(global_invocation_id)]] global_invocation_id: vec3<u32>){
 
         let oPos = in.boids[i].position;
         let oVel = in.boids[i].speed;
+        let oColor = in.boids[i].color;
         let dist = distance(oPos,vPos);
+        let color_m = (1. - distance(oColor, vColor)/1.73205080757)*params.colorMult;
+
 
         if(dist < params.separationReach){
-            sepSum = sepSum + normalize(vPos - oPos) / ( dist * dist);
-            sepCount = sepCount + 1u;
+            sepSum = sepSum + normalize(vPos - oPos) / ( dist * dist + 0.2);
+            sepCount = sepCount + color_m;
         }
         if(dist < params.alignementReach){
-            aliSum = aliSum + oVel;
-            aliCount = aliCount + 1u;
+            aliSum = aliSum + oVel * color_m;
+            aliCount = aliCount + color_m;
         }
         if(dist < params.cohesionReach){
-            cohSum = cohSum + oPos;
-            cohCount = cohCount + 1u;
+            cohSum = cohSum + oPos * color_m;
+            cohCount = cohCount + color_m;
         }
 
         continuing {
@@ -84,18 +87,19 @@ fn step([[builtin(global_invocation_id)]] global_invocation_id: vec3<u32>){
 
     vVel = vVel * inertia;
 
-    if(sepCount>0u){
+    if(sepCount>0.){
         vVel = vVel + sepSum * params.separationScale * params.deltaT;
     }
-    if(aliCount>0u){
+    if(aliCount>0.){
+        aliSum  = aliSum /aliCount;
         vVel = vVel + aliSum * params.alignementScale * params.deltaT;
     }
-    if(cohCount>0u){
+    if(cohCount>0.0){
         let centerOfGrav = cohSum / f32(cohCount);
         vVel = vVel + (- vPos + centerOfGrav)  * params.cohesionScale * params.deltaT;
     }
     let distance_center = length(vPos);
-    vVel = vVel - vPos * distance_center * params.centerAttraction * params.deltaT;
+    vVel = vVel - vPos  * params.centerAttraction * params.deltaT;
 
     vVel = normalize(vVel) * clamp(length(vVel), 0.0, 1.0);
 

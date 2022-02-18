@@ -12,15 +12,15 @@ use crate::application::{ApplicationState, SimulationParams};
 async fn run(event_loop: EventLoop<()>, window:Window){
     // Creating the application
     let mut app = ApplicationState::init(&window, SimulationParams{
-        separation_reach: 2.0,
+        separation_reach: 4.0,
         separation_scale: 1.0,
         alignement_reach: 1.0,
-        alignement_scale: 0.3,
-        cohesion_reach: 2.0,
-        cohesion_scale: 0.5,
-        color_mult: 0.0,
-        step_mult: 0.0,
-        center_attraction: 0.01,
+        alignement_scale: 3.5,
+        cohesion_reach: 4.0,
+        cohesion_scale: 3.0,
+        color_mult: 1.0,
+        step_mult: 1.0,
+        center_attraction: 0.05,
     }).await;
     
     

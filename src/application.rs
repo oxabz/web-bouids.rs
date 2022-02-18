@@ -250,7 +250,7 @@ impl ApplicationState{
                 label: Some("Index Buffer"),
                 contents: bytemuck::cast_slice(BOID_TRIANGLE),
                 usage: wgpu::BufferUsages::INDEX | wgpu::BufferUsages::COPY_DST,
-            };
+            }
         );
 
         let initial_boid= &arr![Boid::rand_new();1000];
@@ -325,7 +325,7 @@ impl ApplicationState{
             }));
         }
 
-        let camera_controller = CameraController::new(0.1, 0.05);
+        let camera_controller = CameraController::new(1., 5.);
 
         let compute_pipeline_layout = device.create_pipeline_layout(&PipelineLayoutDescriptor{
             label: Some("Compute Pipeline Layout"),
@@ -335,7 +335,7 @@ impl ApplicationState{
 
         let compute_shader = device.create_shader_module(&ShaderModuleDescriptor{
             label: Some("StepBoids"),
-            source: wgpu::ShaderSource::Wgsl(include_str!("compute.wgsl").into())
+            source: wgpu::ShaderSource::Wgsl(include_str!("compute2.wgsl").into())
         });
 
         let compute_pipeline = device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor{

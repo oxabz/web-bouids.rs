@@ -9,7 +9,7 @@ pub struct Camera{
 
 impl Camera {
     pub fn new()->Self{
-        Self{ origin: [0.0,0.0], scaling: [200.0, 200.0] }
+        Self{ origin: [0.0,0.0], scaling: [80.0, 80.0] }
     }
 
     pub fn build_scaling(&self, size:winit::dpi::PhysicalSize<u32>) -> [f32; 2] {
