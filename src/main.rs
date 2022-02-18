@@ -15,12 +15,12 @@ async fn run(event_loop: EventLoop<()>, window:Window){
         separation_reach: 4.0,
         separation_scale: 1.0,
         alignement_reach: 1.0,
-        alignement_scale: 3.5,
+        alignement_scale: 7.5,
         cohesion_reach: 4.0,
         cohesion_scale: 3.0,
-        color_mult: 1.0,
+        color_mult: 5.0,
         step_mult: 1.0,
-        center_attraction: 0.05,
+        center_attraction: 6.0,
     }).await;
     
     

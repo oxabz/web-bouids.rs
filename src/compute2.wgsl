@@ -70,8 +70,8 @@ fn step([[builtin(global_invocation_id)]] global_invocation_id: vec3<u32>){
             sepCount = sepCount + color_m;
         }
         if(dist < params.alignementReach){
-            aliSum = aliSum + oVel * color_m;
-            aliCount = aliCount + color_m;
+            aliSum = aliSum + (oVel + 0.2) / (dist + 0.2) * color_m;
+            aliCount = aliCount + color_m / dist;
         }
         if(dist < params.cohesionReach){
             cohSum = cohSum + oPos * color_m;
@@ -98,8 +98,8 @@ fn step([[builtin(global_invocation_id)]] global_invocation_id: vec3<u32>){
         let centerOfGrav = cohSum / f32(cohCount);
         vVel = vVel + (- vPos + centerOfGrav)  * params.cohesionScale * params.deltaT;
     }
-    let distance_center = length(vPos);
-    vVel = vVel - vPos  * params.centerAttraction * params.deltaT;
+    let distanceCenter = length(vPos);
+    vVel = vVel - normalize(vPos) / (1.0 - exp2(-distanceCenter + 20.0)) * params.centerAttraction * params.deltaT;
 
     vVel = normalize(vVel) * clamp(length(vVel), 0.0, 1.0);
 
